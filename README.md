@@ -1,6 +1,20 @@
-# RemotelyPilotedVehicles
+# FPV-Car-Code
 
-YAYYYYYY!
+This is both the Robot and the controller code for a FPV car built using a raspberry pi.
+
+#
+
+You can run the server code (on the raspberry pi for now) and the client code (on the macbook)
+
+**Download client code on computer**
+
+# Networking
+
+uses udp
+
+## Authors:
+
+Dhruv Ramaswamy, Nandini Venkatesh, Daniel Mahany
 
 ## Getting started
 
