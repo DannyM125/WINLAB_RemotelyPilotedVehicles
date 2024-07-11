@@ -2,15 +2,21 @@
 
 This is both the Robot and the controller code for a FPV car built using a raspberry pi.
 
+The client uses Electron, React, Vite, Ant Design, and data gram on the "backend client"
+
+Keep in mind this is essentially a react app with backend functionality (that is what electron does)
+
 #
 
-You can run the server code (on the raspberry pi for now) and the client code (on the macbook)
+You can run the server code (on the raspberry) and the client code (on the macbook), install neccessary packages
 
 **Download client code on computer**
 
 # Networking
 
-uses udp
+Uses udp/datagram, sends objects
+
+Uses zerotier
 
 ## Authors:
 
