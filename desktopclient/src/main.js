@@ -1,5 +1,4 @@
 const { app, BrowserWindow } = require("electron");
-const WebSocket = require("ws");
 const path = require("node:path");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling. Idk how this works
@@ -12,11 +11,15 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    show: false,
     webPreferences: {
+      //This is where the preload script runs
+
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
 
       //Don't change this, it allows us to use require (and node integration)
+      //This is on so that we can't share stuff
       contextIsolation: false,
     },
   });
@@ -30,15 +33,19 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     );
   }
+  mainWindow.once("ready-to-show", () => {
+    mainWindow.show();
+  });
+  //Creating
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
+// called when Electron has finished initialization and is ready to create browser windows (for example browser window can be used here)
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  //Creates browser window
   createWindow();
 
   // On OS X it's common to re-create a window in the app when the
@@ -62,17 +69,3 @@ app.on("window-all-closed", () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 // WebSocket server
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on("connection", (ws) => {
-  console.log("Client connected");
-
-  ws.on("message", (message) => {
-    // console.log(`Received message: ${message}`);
-    ws.send(`Echo: ${message}`);
-  });
-
-  ws.on("close", () => {
-    console.log("Client disconnected");
-  });
-});
