@@ -2,7 +2,7 @@ from __future__ import division
 import time
 from colorama import Fore, Style, Back
 import traceback
-#import keyboard
+# import keyboard
 import threading
 import Adafruit_PCA9685
 from threading import Thread
@@ -10,16 +10,21 @@ import socket
 import json
 # Import the PCA9685 module.
 import RPi.GPIO as GPIO
-from gpiozero import DistanceSensor
+import variables
+from gpiozero import DistanceSensor, Device
+from gpiozero.pins.pigpio import PiGPIOFactory
+
+# use the correct gpio factory... we are mixing PiGPIOFactory
+Device.pin_factory = PiGPIOFactory()
 
 
 ##NETWORKING
 bufferSize = 1024
 # DO NOT HARD CODE THIS. WE ARE DOING SO FOR TESTING PURPOSES. BE WARNED
-HOSTNAME = "10.147.17.144" # for local 10.61.1.234
+HOSTNAME = variables.IP_SERVER_ZT # for local 10.61.1.234
 PORT = 6744
 logs = True #Have logs
-
+manualOverride = False
 # Initialize the PCA9685 using the default address (0x40).
 pwm = Adafruit_PCA9685.PCA9685()
 move_speed = 4000  # Max pulse length out of 4096
@@ -27,10 +32,10 @@ move_speed = 4000  # Max pulse length out of 4096
 GPIO.setmode(GPIO.BCM)  # GPIO number in BCM mode
 GPIO.setwarnings(False)
 
-uds = DistanceSensor(trigger=20, echo=21, max_distance=0.5)
+uds = DistanceSensor(trigger=20, echo=21, max_distance=0.7)
 
 emergency = False
-
+disable_forward = False
 class Motor:
     def __init__(self, motor_pin, direction_pin1, direction_pin2):
         self.motor_pin = motor_pin
@@ -65,11 +70,17 @@ motor_fr = Motor(2, 12, 13)
 motor_fl = Motor(3, 6, 5)
 
 def stop_car():
+    print("stopcar")
     motor_rl.stop()
     motor_rr.stop()
     motor_fr.stop()
     motor_fl.stop()
 def forward():
+    if disable_forward:
+        print("disabling forward")
+        return
+    else:
+        print("forward allowed")
     motor_rl.counterclockwise()
     motor_rr.clockwise()
     motor_fr.clockwise()
@@ -121,14 +132,35 @@ def rotate_counterclockwise():
     motor_fl.clockwise()
 
 def emergency_stop():
-    print("Em stop starting now...")
+    print("Emergency stop starting now...")
+    # The first step is to run a function every time a boolean changes, in this case uds distance
+    inrange_prevval = True
+    global disable_forward
     while True:
-        if round(uds.distance * 39.3701, 2) < 5:
-            print("Emergency triggered... STOP CARJSDFJASKDFJASDF!!!")
-            stop_car()
+        inrange_currval = round(uds.distance * 39.3701, 2) < 10
+        if(manualOverride):
+            continue
+
+        # Do logic for stopping...
+        elif inrange_currval == inrange_prevval:
+            pass
+            # print(f"Didn't change: {round(uds.distance * 39.3701, 2)}")
+
         else:
-            emergency = False
-        time.sleep(0.01)
+            if(inrange_currval):
+
+                # if it is in range, then we need to disable stop
+                disable_forward = True
+                stop_car()
+                print("disabled forward!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            # it must have left range, so we can lift restrictions
+            else:
+                disable_forward = False
+                print("reeanbled forwrad!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+
+        inrange_prevval = inrange_currval
+        time.sleep(0.0075)
 
 # start socket
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -152,11 +184,14 @@ def start():
        # way to stop server
    print("Thread stopped, start method broken out of") if logs else None
 
+
+
+
 def handle_client(data, address):
    print(f"New Data Packet... {json.loads(data)}, from {address}") if logs else None
    # this data is pickled, we need to unpickle it
    data = json.loads(data)
-   print(data["command"])
+   # print(data["command"])
    if(data["command"] == "forward"):
        print("Moving Forward") if logs else None
        forward()
@@ -169,7 +204,6 @@ def handle_client(data, address):
    elif(data["command"] == "straferight"):
        strafe_right()
        print("Strafing right") if logs else None
-
    elif(data["command"] == "rotate_clockwise"):
        rotate_clockwise()
        print("Rotating Clockwise") if logs else None
@@ -191,9 +225,19 @@ def handle_client(data, address):
    elif(data["command"] == "stopcar"):
       print("Stopcar")
       stop_car()
+
+   elif(data["command"] == "togglesafetymode"):
+      print("Safety mode toggled") if logs else None
+      global manualOverride
+      print(data["value"])
+      manualOverride = data["value"]
+
    else:
       #default
       stop_car()
+
+
+
 
 def main():
    try:
@@ -206,8 +250,9 @@ def main():
       t2.start()
       print("\nStarted main thread") if logs else None
       # Magic: t1.join waits for this thread to end
-      #keyboard.wait('ctrl+alt+q')
-      time.sleep(9000000)
+      #        keyboard.wait('ctrl+alt+q')
+      for _ in range(4200):
+          time.sleep(9000000)
    except KeyboardInterrupt:
        print("\nExiting program due to keyboard interrupt... not good") if logs else None
    except:
