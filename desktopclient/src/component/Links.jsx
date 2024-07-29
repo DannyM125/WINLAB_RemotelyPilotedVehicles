@@ -11,6 +11,10 @@ const navlinks = [
     key: crypto.randomUUID(),
     label: <Link to={"/FourWheelUI"}>Four Wheel UI</Link>,
   },
+  {
+    key: crypto.randomUUID(),
+    label: <Link to={"/SettingsUI"}>Settings</Link>,
+  },
 ];
 export default function Links() {
   return (

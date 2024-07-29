@@ -1,0 +1,17 @@
+.b1 {
+  position: absolute;
+  left: 10%;
+  top: 50%;
+}
+
+.b2 {
+  position: absolute;
+  right: 10%;
+  top: 50%;
+}
+.slide {
+  position: absolute;
+  width: 80%;
+  left: 10%;
+  bottom: 70%;
+}
