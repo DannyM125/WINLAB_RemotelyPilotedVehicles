@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { message } from "antd";
 import { ErrorLoading, VideoLoading } from "../component/Loading";
+import { openWarning } from "../App";
+import { Button, Flex } from "antd";
 let debounce = require("lodash/debounce");
-
+const ping = require("ping");
 const Stream = ({ IP, PORT }) => {
   console.log(`${IP}, ${PORT}`);
   const [error, setError] = useState(false);
@@ -17,7 +18,7 @@ const Stream = ({ IP, PORT }) => {
 
   const handleError = () => {
     setTimeout(() => {
-      message.error("Error connecting to the stream.");
+      openWarning("Error connecting to the stream."); //Error connecting to the stream.
     }, 0);
     setError(true);
   };
@@ -36,7 +37,7 @@ const Stream = ({ IP, PORT }) => {
         clearTimeout(timeoutId);
         reject(new Error("Image failed to load"));
       };
-
+      //Creating a timeout -->
       timeoutId = setTimeout(() => {
         img.onerror = null; // Prevents multiple timeout errors
         reject(new Error("Image loading timed out"));
@@ -52,11 +53,12 @@ const Stream = ({ IP, PORT }) => {
         setLoading(false);
       })
       .catch((error) => {
-        // console.error(error);
+        console.error(error);
         handleError();
       });
   };
 
+  //Run to intially load video
   useEffect(() => {
     loadVideo();
     return () => {
@@ -64,6 +66,7 @@ const Stream = ({ IP, PORT }) => {
       setLoading(true);
     };
   }, []);
+  //run use effect on demount to get rid of unneccessary things
 
   if (error) {
     return <ErrorLoading handleErrorLoading={debounce(handleRetry, 300)} />;
@@ -74,14 +77,21 @@ const Stream = ({ IP, PORT }) => {
   }
 
   return (
-    <div>
+    <Flex vertical gap="15px">
       <img
         src={`http://${IP}:${PORT}/stream.mjpg`}
         alt="Stream"
-        style={{ maxWidth: "100%", height: "auto" }}
+        style={{ maxWidth: "100%", height: "auto", userSelect: "none" }}
         onError={handleError}
       />
-    </div>
+      <Button
+        key={crypto.randomUUID()}
+        onClick={handleRetry}
+        style={{ width: "50px" }}
+      >
+        Retry
+      </Button>
+    </Flex>
   );
 };
 

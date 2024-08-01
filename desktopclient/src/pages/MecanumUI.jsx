@@ -3,6 +3,7 @@ import Stream from "../networking/Stream";
 import { sendData } from "../networking/websocket";
 import { Image, Col, Row, Grid, Button } from "antd";
 import "./mecanum.css";
+import Ping from "../component/Ping.jsx";
 import { useKeyMappings } from "../hooks/useKeyMappings";
 import mecanumDiagramImage from "../assets/mecanumdiagram.png";
 import {
@@ -48,6 +49,9 @@ export default function MecanumUI() {
     <>
       <Row>
         <Col span={12}>
+          <div className="pingMecanum">
+            <Ping IP={M_IP} />
+          </div>
           <div className="adaptive-image-container">
             <Image className="adaptive-image" src={mecanumDiagramImage} />
             <div className="buttons-overlay">
@@ -145,7 +149,7 @@ export default function MecanumUI() {
                     sendData(M_IP, M_PORT, { command: "stopcar" });
                   }}
                 >
-                  Diag FL
+                  Diagonal
                 </Button>
               </div>
               <div className="fr">
@@ -159,7 +163,7 @@ export default function MecanumUI() {
                     sendData(M_IP, M_PORT, { command: "stopcar" });
                   }}
                 >
-                  Diag FR
+                  Diagonal
                 </Button>
               </div>
 
@@ -176,7 +180,7 @@ export default function MecanumUI() {
                     });
                   }}
                 >
-                  Diag BL
+                  Diagonal
                 </Button>
               </div>
 
@@ -195,7 +199,7 @@ export default function MecanumUI() {
                     });
                   }}
                 >
-                  Diag BR
+                  Diagonal
                 </Button>
               </div>
             </div>

@@ -1,9 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Button, Slider, Layout, Menu } from "antd";
 import { sendData } from "../networking/websocket";
 import { useKeyMappings } from "../hooks/useKeyMappings";
 import { Col, Row, Grid, Image } from "antd";
 import Stream from "../networking/Stream.jsx";
+import { openWarning } from "../App.jsx";
+import Ping from "../component/Ping.jsx";
 let debounce = require("lodash/debounce");
 
 import "./fourwheel.css";
@@ -15,16 +17,18 @@ const keyMap = {
 };
 
 export default function FourWheelUI() {
-  const handleSliderChange = debounce((e) => {
-    sendData(FW_IP, FW_PORT, { value: e, command: "steercar" });
-  }, 300);
-
-  //Run hook at the very top
   const buttonRefs = {
     FRONT: useRef(null),
     BACKWARD: useRef(null),
   };
   useKeyMappings(keyMap, buttonRefs);
+  const [sliderVal, setSliderVal] = useState(120);
+  const handleSliderChange = (e) => {
+    sendData(FW_IP, FW_PORT, { value: e, command: "steercar" });
+    sendData(FW_IP, FW_PORT, { value: e, command: "steercam" });
+  };
+
+  //Run hook at the very top
 
   //this is local. DONT DELETE THIS! WE WILL MAKE A CONFIG FILE THAT WILL STORE IPS! if you need a different IP address COMMENT THIS ONE OUT AND USE SOMEHTHING ELSE!!!!!! thank you
   // const FW_IP = "10.61.1.178";
@@ -47,6 +51,10 @@ export default function FourWheelUI() {
               Forward
             </Button>
           </div>
+          {/* Todo: migrate towards ant design */}
+          <div className="ping">
+            <Ping IP={FW_IP} />
+          </div>
           <div className="b2">
             <Button
               ref={buttonRefs.BACKWARD}
@@ -62,12 +70,21 @@ export default function FourWheelUI() {
             </Button>
           </div>
           <div className="slide">
-            <span>Steering/ Camera Servo </span>
+            <span style={{ userSelect: "none" }}>Steering / Camera Servo </span>
             <Slider
               min={60}
               max={180}
               defaultValue={120}
+              value={sliderVal}
               onChange={(e) => {
+                if (Math.abs(sliderVal - e) > 50) {
+                  console.log(
+                    "Too big of a change! Too big of a slider change with crash the app. Make sure it is consistent"
+                  );
+                  openWarning("No sudden changes allowed");
+                  return;
+                }
+                setSliderVal(e);
                 handleSliderChange(e);
               }}
             />

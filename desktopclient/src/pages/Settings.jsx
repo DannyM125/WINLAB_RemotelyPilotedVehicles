@@ -46,7 +46,7 @@ export default function Settings() {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
+  const handleClick = () => {
     setIsModalOpen(false);
   };
 
@@ -69,7 +69,7 @@ export default function Settings() {
             />
           </Col>
         </Row>
-        <div className="center">
+        {/* <div className="center">
           <h3>Camera Quality</h3>
           <Slider
             min={50}
@@ -79,7 +79,7 @@ export default function Settings() {
             onChange={debounce(handleCameraQualityChange, 300)}
             style={{ width: "80%", marginTop: "10px" }}
           />
-        </div>
+        </div> */}
       </Col>
       <Col span={12}>
         {/* <div className="center">
@@ -100,7 +100,14 @@ export default function Settings() {
         >
           Show Keyboard Shorcuts
         </Button>
-        <Modal title="Shortcuts" open={isModalOpen} onOk={handleOk}>
+        <Modal
+          title="Shortcuts"
+          open={isModalOpen}
+          onOk={handleClick}
+          onCancel={handleClick}
+          onClose={handleClick}
+        >
+          <h3>Mecanum Shorcuts</h3>
           <div>Key W: Forward</div>
           <div>Key A: Strafe Left</div>
           <div>Key S: Backward</div>
@@ -111,6 +118,9 @@ export default function Settings() {
           <div>Key E: Diagonal Frontright</div>
           <div>Key Z: Diagonal Backleft</div>
           <div>Key X: Diagonal Backright</div>
+          <h3>Ackerman Shorcuts</h3>
+          <div>Key W: Forward</div>
+          <div>Key S: Backward</div>
         </Modal>
       </Col>
     </Row>
