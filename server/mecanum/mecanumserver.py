@@ -10,7 +10,7 @@ import socket
 import json
 # Import the PCA9685 module.
 import RPi.GPIO as GPIO
-import variables
+import server.servosteer.variables as variables
 from gpiozero import DistanceSensor, Device
 from gpiozero.pins.pigpio import PiGPIOFactory
 

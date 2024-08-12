@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button, Slider, Layout, Menu } from "antd";
 import { sendData } from "../networking/websocket";
 import { useKeyMappings } from "../hooks/useKeyMappings";
@@ -27,7 +27,9 @@ export default function FourWheelUI() {
     sendData(FW_IP, FW_PORT, { value: e, command: "steercar" });
     sendData(FW_IP, FW_PORT, { value: e, command: "steercam" });
   };
-
+  useEffect(() => {
+    return () => {};
+  }, []);
   //Run hook at the very top
 
   //this is local. DONT DELETE THIS! WE WILL MAKE A CONFIG FILE THAT WILL STORE IPS! if you need a different IP address COMMENT THIS ONE OUT AND USE SOMEHTHING ELSE!!!!!! thank you

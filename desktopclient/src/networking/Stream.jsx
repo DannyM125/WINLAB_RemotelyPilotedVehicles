@@ -87,7 +87,7 @@ const Stream = ({ IP, PORT }) => {
       <Button
         key={crypto.randomUUID()}
         onClick={handleRetry}
-        style={{ width: "50px" }}
+        style={{ width: "200px", margin: "0 auto" }}
       >
         Retry
       </Button>

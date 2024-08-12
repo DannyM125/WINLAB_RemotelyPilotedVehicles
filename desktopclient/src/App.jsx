@@ -9,7 +9,6 @@ import { SettingsProvider } from "./context/SettingsContext";
 const debounce = require("lodash/debounce");
 
 export let openWarning;
-
 function AppContent() {
   const [messageApi, contextHolder] = message.useMessage();
   openWarning = (text) => {

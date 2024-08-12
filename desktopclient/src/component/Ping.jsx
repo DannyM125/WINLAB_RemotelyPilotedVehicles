@@ -38,8 +38,8 @@ export default function Ping({ IP }) {
     };
   }, [IP]);
   return (
-    <div style={{}}>
-      <span style={{ fontWeight: 800 }}>Ping:</span> {pingVal}
+    <div style={{ userSelect: "none" }}>
+      <span style={{ fontWeight: 800 }}>Connection Delay:</span> {pingVal}ms
     </div>
   );
 }
