@@ -1,32 +1,20 @@
 # First Person View Car Repository
 
-This README will teach you how to setup the remotely piloted vehicles project.
+![Remotely Piloted Vehicles WINLAB Poster  pptx](https://github.com/user-attachments/assets/7bf8dee0-1f8d-42c5-9370-74cc84a5308f)
 
-This repository has the code for both the server (the robot code) and the client code (runs on computer)
-
-The client uses Javascript, React, Electron, Ant Design. For more information, check out the README in the "desktopclient folder"
-
-The server uses python. For more information, check out the README in the server folder.
-
-Read this manual before setting client and server. After reading, set up server then setup the client.
-
-##
-
-**Download client code on computer**
+## YOUTUBE PRESENTATION
+https://youtu.be/4y40G_Nk6XI?si=XVVfM5EgviTyy0nB 
 
 ## Getting started
+**Download client code on computer**
 
-First, download this code and open it up in your IDE of choice (We use vscode). Open up a terminal to run commands.
+- First, download this code and open it up in your IDE of choice (We use vscode). Open up a terminal to run commands.
 
-Pull the repo down onto you local machine (click the code button and you will see many options, like opening with vscode).
+- Pull the repo down onto you local machine (click the code button and you will see many options, like opening with vscode).
 
 ## Description
 
-This project allows you to control a robot with multiple sensors with low latency from anywhere over the internet.
-
-## Possible improvements
-
-One direction to go in is to add more sensing and create a UI to interact with it. We started implementing audio and depth sensing features. Object detection or improved networking (improving the camera stream) would also be another way to go.
+- This project allows you to control a robot with multiple sensors with low latency from anywhere over the internet.
 
 ## Bash Scripts
 
@@ -44,3 +32,4 @@ Advisor: Dr. Richard P Martin
 
 If you have any questions, reach out to
 dhruv.ramaswamy@gmail.com
+mahanydaniel@gmail.com
